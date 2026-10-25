@@ -550,15 +550,17 @@
             const getRightPanelLaTeX = () => {
                 if (moduleData.id === 'aspa') {
                     if (stepIdx < 4) return `ax^2 + bx + c = 0`;
-                    return `(x ${exercise.f2})(x ${exercise.f4}) = 0`;
+                    return exercise.fact ? exercise.fact.split(' \\implies')[0] : `(${exercise.f1} ${exercise.f2})(${exercise.f3} ${exercise.f4}) = 0`;
                 }
                 if (moduleData.id === 'completar') {
-                    if (stepIdx < 3) return `x^2 + bx + (\\frac{b}{2})^2`;
+                    if (stepIdx < 3) return `x^2 + bx + (\\frac{b}{2})^2 = c + (\\frac{b}{2})^2`;
                     return `(x ${exercise.halfB})^2 = ${exercise.right2}`;
                 }
                 if (moduleData.id === 'formula') {
                     if (stepIdx < 3) return `\\Delta = ${exercise.delta}`;
-                    return `x = \\frac{${-(parseInt(exercise.b))} \\pm ${Math.sqrt(exercise.delta) || '\\sqrt{'+exercise.delta+'}'}}{${2*exercise.a}}`;
+                    const sq = Math.sqrt(exercise.delta);
+                    const sqStr = Number.isInteger(sq) ? sq : `\\sqrt{${exercise.delta}}`;
+                    return `x = \\frac{${-(parseInt(exercise.b))} \\pm ${sqStr}}{${2*exercise.a}}`;
                 }
                 if (moduleData.id === 'aplicaciones') {
                     if (stepIdx < 2) return `ax^2 + bx + c = 0`;
@@ -568,11 +570,8 @@
 
             const getCalculatedValue = () => {
                 if (stepIdx < maxSteps) return `\\text{Calculando...}`;
-                if (moduleData.id === 'aplicaciones') return `\\text{Resuelto}`;
-                if (moduleData.id === 'formula') return exercise.rootStr;
-                return `x_1 = ${exercise.rootStr.split(', ')[0].split('=')[1]}, \\; x_2 = ${exercise.rootStr.split(', ')[1]?.split('=')[1] || exercise.rootStr.split(',')[1]}`;
+                return exercise.rootStr;
             };
-
 
             /* ==========================================
                VISTA 1: PORTADA ESTILO GAMER NEÓN
@@ -707,7 +706,7 @@
                                         </span>
                                     </div>
                                     <div className="w-full flex-1 flex flex-col justify-center min-h-[220px]">
-                                        {renderVisualLeft()}
+                                        {renderContinuousBoard()}
                                     </div>
                                 </div>
 
